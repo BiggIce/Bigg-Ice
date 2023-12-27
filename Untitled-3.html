@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigg-Ice Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://mcdn.wallpapersafari.com/medium/75/22/OJ8ztc.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+        }
+
+        #search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #fff; /* Couleur du texte pour une meilleure lisibilité sur l'image de fond */
+        }
+
+        #search-form {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8); /* Ajoute une opacité blanche pour le formulaire */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #search-input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #search-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #search-button:hover {
+            background-color: #2e5ff7;
+        }
+
+        #results-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #result-images {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        #result-images img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchForm = document.getElementById('Une voiture de f1');
+            const resultsContainer = document.getElementById('https://mcdn.wallpapersafari.com/medium/87/39/Fks0ew.png');
+            const searchTermElement = document.getElementById('Photo de univers');
+            const resultImagesContainer = document.getElementById('https://mcdn.wallpapersafari.com/medium/63/77/z4BEe7.jpg');
+
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const searchTerm = document.getElementById('search-input').value;
+                performSearch(searchTerm);
+            });
+
+            function performSearch(query) {
+                // Utilisation de l'API DuckDuckGo pour la démo
+                const apiUrl = `https://api.duckduckgo.com/?q=${query}&format=json`;
+
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => displayResults(data, query));
+            }
+
+            function displayResults(data, query) {
+                searchTermElement.textContent = query;
+
+                resultsContainer.innerHTML = '';
+
+                if (data.RelatedTopics.length > 0) {
+                    const resultList = document.createElement('ul');
+
+                    data.RelatedTopics.forEach(result => {
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = result.FirstURL;
+                        link.textContent = result.Text;
+
+                        listItem.appendChild(link);
+                        resultList.appendChild(listItem);
+                    });
+
+                    resultsContainer.appendChild(resultList);
+                } else {
+                    resultsContainer.innerHTML = '<p>Aucun résultat trouvé.</p>';
+                }
+
+                // Afficher des images des résultats de la recherche (si disponibles)
+                resultImagesContainer.innerHTML = '';
+                if (data.Image && data.Image !== '') {
+                    const resultImage = document.createElement('https://mcdn.wallpapersafari.com/medium/10/46/ZwWX5u.jpg');
+                    resultImage.src = data.Image;
+                    resultImage.alt = 'Image de résultat';
+                    resultImagesContainer.appendChild(resultImage);
+                }
+
+                // Personnalisation des réponses pour certains termes de recherche
+                if (query.toLowerCase() === 'exemple1') {
+                    resultsContainer.innerHTML = '<p>Photo de mangas de Jusjustu Kaizen.</p>';
+                    resultImagesContainer.innerHTML = '<img src="https://mcdn.wallpapersafari.com/medium/10/46/ZwWX5u.jpg" alt="Image personnalisée pour Exemple 1">';
+                } else if (query.toLowerCase() === "C'est quoi un basketeur") {
+                    resultsContainer.innerHTML = '<p>Un basketeur est une personne qui joue du basket.</p>';
+                    resultImagesContainer.innerHTML = '<https://mcdn.wallpapersafari.com/small/3/64/oxQlPj.jpg>';
+                }
+                // Ajoutez d'autres conditions selon vos besoins
+            }
+        });
+    </script>
+</head>
+<body>
+    <div id="search-container">
+        <form id="search-form">
+            <input type="text" id="search-input" placeholder="Rechercher sur Bigg-Ice...">
+            <button type="submit" id="search-button">Recherche Bigg-Ice</button>
+        </form>
+
+        <div id="results-container">
+            <h2>Résultats de la recherche pour "<span id="search-term"></span>"</h2>
+            <div id="result-images"></div>
+        </div>
+    </div>
+</body>
+</html>
